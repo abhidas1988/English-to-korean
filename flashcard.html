@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2em; }
+    .card { font-size: 1.5em; border: 2px solid #333; border-radius: 15px; padding: 2em; margin: 2em; cursor: pointer; }
+    .nav { font-size: 2em; cursor: pointer; padding: 0 1em; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card" onclick="toggleMeaning()">Loading...</div>
+  <div>
+    <span class="nav" onclick="prevCard()">&lt;</span>
+    <span class="nav" onclick="nextCard()">&gt;</span>
+  </div>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const letter = urlParams.get('letter');
+  let data = [], index = 0, showMeaning = false;
+
+  fetch(`data/${letter}.json`)
+    .then(res => res.json())
+    .then(json => {
+      data = json;
+      showCard();
+    });
+
+  function showCard() {
+    const card = document.getElementById("card");
+    const entry = data[index];
+    card.textContent = showMeaning ? entry.korean : entry.english;
+  }
+
+  function toggleMeaning() {
+    showMeaning = !showMeaning;
+    showCard();
+  }
+
+  function prevCard() {
+    if (index > 0) { index--; showMeaning = false; showCard(); }
+  }
+
+  function nextCard() {
+    if (index < data.length - 1) { index++; showMeaning = false; showCard(); }
+  }
+</script>
+</body>
+</html>
